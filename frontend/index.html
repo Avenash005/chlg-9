@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+ <html>
+<head>
+  <title>Bug Tracker</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    input {
+      padding: 10px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    button {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      background: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background: white;
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    li button {
+      background: #ff4d4d;
+    }
+
+    li button:hover {
+      background: #e60000;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Add Bug</h2>
+<input id="title" placeholder="Bug title">
+<input id="fix" placeholder="Fix">
+<button onclick="addBug()">Add</button>
+
+<h2>Bug List</h2>
+<ul id="list"></ul>
+
+<script>
+const API = "http://localhost:3000";
+
+async function fetchBugs() {
+  const res = await fetch(API + "/bugs");
+  const data = await res.json();
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  data.forEach(b => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${b.title} - ${b.fix}
+      <button onclick="deleteBug(${b.id})">Delete</button>
+    `;
+    list.appendChild(li);
+  });
+}
+
+async function addBug() {
+  const title = document.getElementById("title").value;
+  const fix = document.getElementById("fix").value;
+
+  await fetch(API + "/bugs", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, fix, date: new Date() })
+  });
+
+  fetchBugs();
+}
+
+async function deleteBug(id) {
+  await fetch(API + "/bugs/" + id, {
+    method: "DELETE"
+  });
+
+  fetchBugs();
+}
+
+fetchBugs();
+</script>
+
+</body>
+</html>
