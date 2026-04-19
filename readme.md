@@ -17,3 +17,5 @@ I kept forgetting bugs I encountered and how I fixed them. This app stores them 
 ## Live Deployment
 Frontend: https://singular-frangollo-04aa92.netlify.app
 Backend:  https://chlg9.onrender.com
+
+##
